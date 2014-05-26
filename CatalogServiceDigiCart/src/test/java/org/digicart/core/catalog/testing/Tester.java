@@ -33,13 +33,29 @@ public class Tester {
 			form.add("activeStartDate", "2/5/2014");
 			form.add("activeEndDate", "2/6/2014");
 			form.add("longDescription", "Categories of Default Items");
-			form.add("defaultParentCategory", "DefaultCategory");
+			form.add("defaultParentCategory", "Mobile");
 			
 		    ClientResponse response = service.path("createCategory")
 		        .type(MediaType.APPLICATION_FORM_URLENCODED)
 		        .post(ClientResponse.class, form);		     
 		    System.out.println("Form response " + response.getEntity(String.class));
 	    
+		    form.clear();
+		    form.add("productName", "NokiaXL");
+			form.add("description", "New Nokia Windows Phone");
+			form.add("longDescription", "New Nokia Windows Phone having portability for Androids Apps");
+			form.add("ActiveStartDate", "2/6/2014");
+			form.add("ActiveEndDate", "3/7/2014");
+			form.add("Manufacturer", "Nokia");
+			form.add("isFeaturedProduct", "Yes");
+			form.add("DefaultCategory", "Mobile");
+			form.add("Model", "NokiaXL123");
+		    
+			  response = service.path("createProduct")
+				        .type(MediaType.APPLICATION_FORM_URLENCODED)
+				        .post(ClientResponse.class, form);	
+			
+		    
 	  }
 	  
 	  

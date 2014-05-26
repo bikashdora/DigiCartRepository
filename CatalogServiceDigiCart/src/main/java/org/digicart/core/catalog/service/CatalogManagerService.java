@@ -198,11 +198,5 @@ public class CatalogManagerService {
 		}
 		
 	}
-	
-	
-	
-
-	
-
-	
+		
 }

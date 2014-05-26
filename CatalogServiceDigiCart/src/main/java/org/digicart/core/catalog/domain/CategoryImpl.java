@@ -46,7 +46,9 @@ import org.hibernate.annotations.Type;
 
 public class CategoryImpl implements Category,Status {
 
-    private static final long serialVersionUID = 1L;
+    
+
+	private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(CategoryImpl.class);
     
     private static String buildLink(Category category, boolean ignoreTopLevel) {
@@ -131,7 +133,8 @@ public class CategoryImpl implements Category,Status {
     @Override
     public void setName(String name) {
         this.name = name;
-    }   
+    }
+    
 
     @Override
     public String getDescription() {
