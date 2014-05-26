@@ -15,6 +15,7 @@ import java.util.List;
 
 
 
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -209,5 +210,7 @@ public interface CategoryDao {
 	public List<Category> readAllSubCategories(String categoryName);
 
 	public List<Category> readActiveSubCategoriesByCategory(String categoryName);
+
+	public void delete(String categoryName);
 
 }

@@ -164,6 +164,45 @@ public interface Product extends Serializable {
      */
     public boolean isActive();
     
+    /**
+     * Gets the default {@link Sku} associated with this Product. A Product is
+     * required to have a default Sku which holds specific information about the Product
+     * like weight, dimensions, price, etc.  Many of the Product attributes that
+     * have getters and setters on Product are actually pass-through to the default Sku.
+     * <br />
+     * <br />
+     * Products can also have multiple Skus associated with it that are represented by
+     * {@link ProductOption}s. For instance, a large, blue shirt. For more information on
+     * that relationship see {@link #getAdditionalSkus()}.
+     * 
+     * @return the default Sku for this Product
+     */
+    public Sku getDefaultSku();
+
+    /**
+     * Sets the default Sku for this Product
+     * <br />
+     * <br />
+     * Note: this operation is cascaded with CascadeType.ALL which saves from having to persist the Product
+     * in 2 operations: first persist the Sku and then take the merged Sku, set it as this Product's default
+     * Sku, and then persist this Product.
+     * 
+     * @param defaultSku - the Sku that should be the default for this Product
+     */
+    public void setDefaultSku(Sku defaultSku);
+    
+    /**
+     * Returns all the {@link Sku}s that are associated with this Product (including {@link #getDefaultSku()})
+     * regardless of whether or not the {@link Sku}s are active or not
+     * <br />
+     * <br />
+     * Note: in the event that the default Sku was added to the list of {@link #getAdditionalSkus()}, it is filtered out
+     * so that only a single instance of {@link #getDefaultSku()} is contained in the resulting list
+     * 
+     * @return all the Skus associated to this Product
+     */
+    public List<Sku> getAllSkus();
+    
    
     /**
      * @return whether or not the default sku can be used for a multi-sku product in the case that no 
@@ -577,4 +616,5 @@ public interface Product extends Serializable {
      * @param taxCode
      */
     public void setTaxCode(String taxCode);
+
 }

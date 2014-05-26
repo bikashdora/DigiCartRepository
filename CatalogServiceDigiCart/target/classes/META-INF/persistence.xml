@@ -16,13 +16,18 @@
 	<persistence-unit name="blPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		 <mapping-file>META-INF/config/dc/jpa/domain/Category.orm.xml</mapping-file>
+		<class>org.digicart.common.currency.domain.DigiCartCurrencyImpl</class>
 		<class>org.digicart.core.catalog.domain.CategoryImpl</class>		
 		<class>org.digicart.core.catalog.domain.ProductImpl</class>
 		<class>org.digicart.core.catalog.domain.ProductAttributeImpl</class>
+		<class>org.digicart.core.catalog.domain.CategoryProductXrefImpl</class>
+		<class>org.digicart.core.catalog.domain.CategoryXrefImpl</class>
+		<class>org.digicart.core.catalog.domain.SkuAttributeImpl</class>
+		<class>org.digicart.core.catalog.domain.SkuImpl</class>		
 		 <exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.default_schema" value="digicart" />
 			<property name="hibernate.transaction.flush_before_completion"
 				value="false" />

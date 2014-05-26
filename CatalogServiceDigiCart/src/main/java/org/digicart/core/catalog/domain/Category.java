@@ -72,6 +72,16 @@ public interface Category extends Serializable {
      */
    
     public String getUrl();
+    
+    /**
+     * Creates the SEO url starting from this category and recursing up the
+     * hierarchy of default parent categories until the topmost category is
+     * reached. The url key for each category is used for each segment
+     * of the SEO url.
+     * 
+     * @return the generated SEO url for this category
+     */
+    public String getGeneratedUrl();
 
     /**
      * Sets the url. The url represents the presentation layer destination for
@@ -81,7 +91,26 @@ public interface Category extends Serializable {
      * 
      * @param url the new url for the presentation layer component for this category
      */
-    public void setUrl( String url);    
+    public void setUrl( String url);
+    
+    /**
+     * Gets the url key. The url key is used as part of SEO url generation for this
+     * category. Each segment of the url leading to a category is comprised of the url
+     * keys of the various associated categories in a hierarchy leading to this one. If
+     * the url key is null, the the name for the category formatted with dashes for spaces.
+     * 
+     * @return the url key for this category to appear in the SEO url
+     */    
+    public String getUrlKey();
+    
+    /**
+     * Sets the url key. The url key is used as part of SEO url generation for this
+     * category. Each segment of the url leading to a category is comprised of the url
+     * keys of the various associated categories in a hierarchy leading to this one.
+     * 
+     * @param urlKey the new url key for this category to appear in the SEO url
+     */
+    public void setUrlKey(String urlKey);
 
     /**
      * Gets the description.

@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.digicart.common.persistence.ArchiveStatus;
 import org.digicart.common.persistence.Status;
 import org.digicart.common.util.DateUtil;
+import org.digicart.common.util.UrlUtil;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
@@ -47,7 +48,24 @@ public class CategoryImpl implements Category,Status {
 
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(CategoryImpl.class);
+    
+    private static String buildLink(Category category, boolean ignoreTopLevel) {
+        Category myCategory = category;
+        StringBuilder linkBuffer = new StringBuilder(50);
+        while (myCategory != null) {
+            if (!ignoreTopLevel || myCategory.getDefaultParentCategory() != null) {
+                if (linkBuffer.length() == 0) {
+                    linkBuffer.append(myCategory.getUrlKey());
+                } else if(myCategory.getUrlKey() != null && !"/".equals(myCategory.getUrlKey())){
+                    linkBuffer.insert(0, myCategory.getUrlKey() + '/');
+                }
+            }
+            myCategory = myCategory.getDefaultParentCategory();
+        }
 
+        return linkBuffer.toString();
+    }
+    
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CATEGORY_ID" ,nullable = true)  
@@ -113,29 +131,7 @@ public class CategoryImpl implements Category,Status {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getUrl() {
-        // TODO: if null return
-        // if blank return
-        // if startswith "/" return
-        // if contains a ":" and no "?" or (contains a ":" before a "?") return
-        // else "add a /" at the beginning
-        if(url == null || url.equals("") || url.startsWith("/")) {
-            return url;       
-        } else if ((url.contains(":") && !url.contains("?")) || url.indexOf('?', url.indexOf(':')) != -1) {
-            return url;
-        } else {
-            return "/" + url;
-        }
-    }
-
-    @Override
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
+    }   
 
     @Override
     public String getDescription() {
@@ -214,6 +210,45 @@ public class CategoryImpl implements Category,Status {
             archiveStatus = new ArchiveStatus();
         }
         archiveStatus.setArchived(archived);
+    }
+    
+    @Override
+    public String getUrl() {
+        // TODO: if null return
+        // if blank return
+        // if startswith "/" return
+        // if contains a ":" and no "?" or (contains a ":" before a "?") return
+        // else "add a /" at the beginning
+        if(url == null || url.equals("") || url.startsWith("/")) {
+            return url;       
+        } else if ((url.contains(":") && !url.contains("?")) || url.indexOf('?', url.indexOf(':')) != -1) {
+            return url;
+        } else {
+            return "/" + url;
+        }
+    }
+    
+    @Override
+    public String getGeneratedUrl() {
+        return buildLink(this, false);
+    }
+    
+    @Override
+    public void setUrlKey(String urlKey) {
+        this.urlKey = urlKey;
+    }
+    
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public String getUrlKey() {
+        if ((urlKey == null || "".equals(urlKey.trim())) && name != null) {
+            return UrlUtil.generateUrlKey(name);
+        }
+        return urlKey;
     }
 
     @Override

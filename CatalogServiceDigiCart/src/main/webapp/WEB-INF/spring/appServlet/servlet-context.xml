@@ -61,6 +61,15 @@
 		class="org.digicart.core.catalog.dao.ProductDaoImpl"></beans:bean>
 
 
+	<beans:bean id="org.digicart.core.catalog.dao.SkuDao"
+		class="org.digicart.core.catalog.dao.SkuDaoImpl"></beans:bean>
+		
+		<beans:bean id="org.digicart.core.catalog.dao.CategoryXrefDao"
+		class="org.digicart.core.catalog.dao.CategoryXrefDaoImpl"></beans:bean>
+		
+		<beans:bean id="org.digicart.common.currency.domain.DigiCartCurrency" class="org.digicart.common.currency.domain.DigiCartCurrencyImpl"></beans:bean>
+		
+
 	<context:component-scan base-package="org.digicart.core" />
 	<beans:import resource="servlet-database.xml" />
 

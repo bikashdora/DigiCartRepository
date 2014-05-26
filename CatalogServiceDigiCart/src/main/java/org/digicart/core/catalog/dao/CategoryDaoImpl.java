@@ -184,6 +184,13 @@ public class CategoryDaoImpl implements CategoryDao {
         ((Status) category).setArchived('Y');
         em.merge(category);
     }
+    
+    @Override
+    public void delete(String categoryName) {
+    	Category category = readCategoryByName(categoryName);    	
+        ((Status) category).setArchived('Y');
+        em.merge(category);
+    }
 
   /*  @Override
     public Category create() {

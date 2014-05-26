@@ -192,6 +192,8 @@ public interface CatalogService {
 	public List<Product> findAllProducts(int limit, int offset);
 
 	public List<Product> findProductsForCategory(Category category);
+	
+	public List<Product> findProductsForCategory(String categoryName);
 
 	public List<Product> findProductsForCategory(Category category, int limit,
 			int offset);
@@ -258,6 +260,18 @@ public interface CatalogService {
 			String defaultParentCategory);
 
 	public List<Category> findAllSubCategories(String categoryName);
+
+
+	void createProduct(String productName, String description,
+			String longDescription, Date activeStartDate, Date activeEndDate,
+			String manufacturer, Boolean isFeaturedProduct, String model,
+			String defaultCategory);
+
+	public void removeCategory(String categoryName);
+
+	public List<Product> findActiveProductsByCategory(String categoryName);
+
+	public void removeProduct(Long productId) throws Exception;
 	
 	
 	

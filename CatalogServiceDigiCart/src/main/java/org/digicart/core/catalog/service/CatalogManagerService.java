@@ -9,13 +9,16 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.digicart.core.catalog.domain.Category;
+import org.digicart.core.catalog.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 @Path("/catalogService")
 public class CatalogManagerService {
@@ -38,57 +41,168 @@ public class CatalogManagerService {
 		checkNotNull(activeEndDate);
 		checkNotNull(longDescription);
 		checkNotNull(defaultParentCategory);
-		
-		catalogService.createCategory(categoryName,activeStartDate,activeEndDate,longDescription,defaultParentCategory);
+
+		catalogService.createCategory(categoryName, activeStartDate,
+				activeEndDate, longDescription, defaultParentCategory);
 	}
-	/*Get All Categories whose parent category is null*/
+
+	/* Get All Categories whose parent category is null */
 	@Path("getAllParentCategories")
-	@GET	
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Category>  readAllParentCategories()  {
-		// preconditions			
+	public List<Category> readAllParentCategories() {
+		// preconditions
 		return catalogService.findAllParentCategories();
 	}
-	
-	
+
 	@Path("getCategoryByName")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Category> getCategory(@FormParam("categoryName") String categoryName) {
+	public List<Category> getCategory(
+			@FormParam("categoryName") String categoryName) {
 		// preconditions
-		checkNotNull(categoryName);		
+		checkNotNull(categoryName);
 		return catalogService.findCategoriesByName(categoryName);
 	}
-	
+
 	@Path("getAllCategories")
-	@GET
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Category> getAllCategories() {
-			
+
 		return catalogService.findAllCategories();
-	}	
-	
+	}
+
 	@Path("getAllSubCategories")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Category> getAllSubCategories(@FormParam("categoryName") String categoryName) {
+	public List<Category> getAllSubCategories(
+			@FormParam("categoryName") String categoryName) {
 		// preconditions
-		checkNotNull(categoryName);		
+		checkNotNull(categoryName);
 		return catalogService.findAllSubCategories(categoryName);
 	}
-	
+
 	@Path("getActiveSubCategoriesByCategory")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Category> getActiveSubCategoriesByCategory(@FormParam("categoryName") String categoryName) {
+	public List<Category> getActiveSubCategoriesByCategory(
+			@FormParam("categoryName") String categoryName) {
 		// preconditions
-		checkNotNull(categoryName);		
+		checkNotNull(categoryName);
 		return catalogService.findAllSubCategories(categoryName);
 	}
 	
+	@Path("removeCategory")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	
+	public void removeCategory(
+			@FormParam("categoryName") String categoryName) {
+		// preconditions
+		checkNotNull(categoryName);
+		 catalogService.removeCategory(categoryName);
+	}
+	
+	
+
+	/*public Category saveCategory(Category category) {
+		return categoryDao.save(category);
+	}*/
+
+	@Path("createProduct")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void createProduct(@FormParam("productName") String productName,
+			@FormParam("description") String description,
+			@FormParam("longDescription") String longDescription,
+			@FormParam("ActiveStartDate") Date activeStartDate,
+			@FormParam("ActiveEndDate") Date activeEndDate,
+			@FormParam("Manufacturer") String manufacturer,
+			@FormParam("isFeaturedProduct") Boolean isFeaturedProduct,
+			@FormParam("DefaultCategory") String defaultCategory,			
+			@FormParam("Model") String model) {
+		// preconditions
+		checkNotNull(productName);
+		checkNotNull(description);
+		checkNotNull(longDescription);
+		checkNotNull(activeStartDate);
+		checkNotNull(activeEndDate);
+		checkNotNull(manufacturer);
+		checkNotNull(isFeaturedProduct);
+		checkNotNull(defaultCategory);
+		catalogService.createProduct(productName,description, longDescription, activeStartDate, activeEndDate, manufacturer, isFeaturedProduct, model, defaultCategory);		
+		
+	}
+	
+	@Path("getProductsByName")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List <Product> getProductsByName(
+			@FormParam("searchName") String searchName) {
+		// preconditions
+		checkNotNull(searchName);
+		return catalogService.findProductsByName(searchName);
+	}
+
+	@Path("getActiveProductsByCategory")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List <Product> getActiveProductsByCategory(
+			@FormParam("categoryName") String categoryName) {
+		// preconditions
+		checkNotNull(categoryName);
+		return catalogService.findActiveProductsByCategory(categoryName);
+	}
+
+	@Path("getAllProducts")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public List <Product> getAllProducts() {		
+		return catalogService.findAllProducts();
+	}
+
+	@Path("getProductsForCategory")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List <Product> getProductsForCategory(
+			@FormParam("categoryName") String categoryName) {
+		// preconditions
+		checkNotNull(categoryName);
+		return catalogService.findProductsForCategory(categoryName);
+	}
+	
+	
+	@Path("removeProduct")
+	@PUT
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void removeProduct(
+			@FormParam("productId") Long productId) {
+		// preconditions
+		checkNotNull(productId);
+		try{
+			 catalogService.removeProduct(productId);
+		}
+		
+		catch(Exception e)
+		{
+			
+		}
+		
+	}
+	
+	
+	
+
+	
+
 	
 }

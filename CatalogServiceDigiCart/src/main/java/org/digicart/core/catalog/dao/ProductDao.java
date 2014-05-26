@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import org.digicart.core.catalog.domain.Product;
 import org.digicart.core.catalog.service.type.ProductType;
+import org.digicart.core.search.domain.ProductSearchCriteria;
 
 
 /**
@@ -93,9 +94,9 @@ public interface ProductDao {
      * @param searchCriteria
      * @return the matching products
      */
-  /*  @NotNull
+    @NotNull
     public List<Product> readFilteredActiveProductsByCategory(Long categoryId, ProductSearchCriteria searchCriteria);
-*/
+
     /**
      * Find all products whose start and end dates are before and after the passed in 
      * date, who match the search string, match the given search criteria, and are not
@@ -105,9 +106,9 @@ public interface ProductDao {
      * @param searchCriteria
      * @return the matching products
      */
-   /* @NotNull
+    @NotNull
     public List<Product> readFilteredActiveProductsByQuery(String query, ProductSearchCriteria searchCriteria);
-*/
+
 
 
     /**
@@ -122,9 +123,9 @@ public interface ProductDao {
      * @param searchCriteria
      * @return the matching products
      */
-  /*  @NotNull
+    @NotNull
     public List<Product> readFilteredActiveProductsByCategory(Long categoryId, Date currentDate, ProductSearchCriteria searchCriteria);
-    */
+  
     /**
      * @deprecated Use {@link #readActiveProductsByCategory(Long)}
      * 
@@ -149,9 +150,9 @@ public interface ProductDao {
      * @param searchCriteria
      * @return the matching products
      */
-    /*@NotNull
+   @NotNull
     public List<Product> readFilteredActiveProductsByQuery(String query, Date currentDate, ProductSearchCriteria searchCriteria);
-*/
+
     /**
      * @deprecated Use {@link #readActiveProductsByCategory(Long)}
      */
@@ -297,5 +298,15 @@ public interface ProductDao {
      */
     public void setCurrentDateResolution(Long currentDateResolution);
 
-	Product createProduct(Product product);
+	public Product createProduct(Product product);
+
+	public void createProduct(String productName,String description, String longDescription,
+			Date activeStartDate, Date activeEndDate, String manufacturer,
+			Boolean isFeaturedProduct, String model, String defaultCategory);
+
+	public List<Product> readProductsByCategoryName(String categoryName);
+
+	public List<Product> readActiveProductsByCategory(String categoryName);
+
+	public void delete(Long productId) throws Exception;
 }

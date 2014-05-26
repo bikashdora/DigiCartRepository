@@ -57,6 +57,11 @@ public class CatalogServiceImpl implements CatalogService {
         return productDao.readActiveProductsByCategory(category.getId());
     }
 
+    @Override
+    public List<Product> findActiveProductsByCategory(String categoryName) {
+        return productDao.readActiveProductsByCategory(categoryName);
+    }
+    
    /* @Override
     public List<Product> findFilteredActiveProductsByCategory(Category category, ProductSearchCriteria searchCriteria) {
         return productDao.readFilteredActiveProductsByCategory(category.getId(), searchCriteria);
@@ -147,8 +152,30 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     @Transactional("blTransactionManager")
+    public void removeCategory(String categoryName){
+        categoryDao.delete(categoryName);
+    }
+    
+    @Override
+    @Transactional("blTransactionManager")
     public void removeProduct(Product product) {
         productDao.delete(product);
+    }
+    
+    @Override
+    @Transactional("blTransactionManager")
+    public void removeProduct(Long productId) {
+     
+    	   try {
+			productDao.delete(productId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
+		}
+     
+       
+       
+    	
     }
 
     @Override
@@ -257,6 +284,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    @Transactional("blTransactionManager")
     public Map<String, List<Long>> getChildCategoryURLMapByCategoryId(Long categoryId) {
         Category category = findCategoryById(categoryId);
         if (category != null) {
@@ -274,12 +302,14 @@ public class CatalogServiceImpl implements CatalogService {
 
 	
 	@Override
+	@Transactional("blTransactionManager")
 	public Category findCategoryByURI(String uri) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	@Transactional("blTransactionManager")
 	public Product findProductByURI(String uri) {
 		// TODO Auto-generated method stub
 		return null;
@@ -296,6 +326,17 @@ public class CatalogServiceImpl implements CatalogService {
     public Product createProduct(ProductType productType) {
         return productDao.create(productType);
     }
+    
+    @Override
+    @Transactional("blTransactionManager")
+    public void createProduct(String productName,String description,String longDescription,Date activeStartDate,Date activeEndDate,String manufacturer,Boolean isFeaturedProduct,String model,String defaultCategory) {
+    	this.productDao.createProduct(productName,description,longDescription,activeStartDate,activeEndDate,manufacturer,isFeaturedProduct,model,defaultCategory);
+    	
+    }
+    
+   
+    
+    
 /*
     @Override
     public List<ProductOption> readAllProductOptions() {
@@ -320,8 +361,12 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Override
 	public List<Category> findAllSubCategories(Category category) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Product> findProductsForCategory(String categoryName) {
+		return productDao.readProductsByCategoryName(categoryName);
 	}
 
    /* @SuppressWarnings("rawtypes")

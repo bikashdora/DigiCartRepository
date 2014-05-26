@@ -20,6 +20,7 @@
 package org.digicart.core.catalog.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +40,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
@@ -49,6 +52,7 @@ import org.digicart.common.web.Locatable;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.SQLDelete;
 
@@ -130,6 +134,17 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Embedded
 	protected ArchiveStatus archiveStatus = new ArchiveStatus();
 
+	@OneToOne(targetEntity = SkuImpl.class, cascade = { CascadeType.ALL })
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
+	@Cascade(value = { org.hibernate.annotations.CascadeType.ALL })
+	@JoinColumn(name = "DEFAULT_SKU_ID")
+	protected Sku defaultSku;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = SkuImpl.class, mappedBy = "product")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
+	@BatchSize(size = 50)
+	protected List<Sku> additionalSkus = new ArrayList<Sku>();
+
 	@Override
 	public Long getId() {
 		return id;
@@ -138,6 +153,56 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Override
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@Override
+	public String getName() {
+		return getDefaultSku().getName();
+	}
+
+	@Override
+	public void setName(String name) {
+		getDefaultSku().setName(name);
+	}
+
+	@Override
+	public String getDescription() {
+		return getDefaultSku().getDescription();
+	}
+
+	@Override
+	public void setDescription(String description) {
+		getDefaultSku().setDescription(description);
+	}
+
+	@Override
+	public String getLongDescription() {
+		return getDefaultSku().getLongDescription();
+	}
+
+	@Override
+	public void setLongDescription(String longDescription) {
+		getDefaultSku().setLongDescription(longDescription);
+	}
+
+	@Override
+	public Date getActiveStartDate() {
+		return getDefaultSku().getActiveStartDate();
+	}
+
+	@Override
+	public void setActiveStartDate(Date activeStartDate) {
+		getDefaultSku().setActiveStartDate(activeStartDate);
+	}
+
+	@Override
+	public Date getActiveEndDate() {
+		return getDefaultSku().getActiveEndDate();
+	}
+
+	@Override
+	public void setActiveEndDate(Date activeEndDate) {
+		getDefaultSku().setActiveEndDate(activeEndDate);
 	}
 
 	@Override
@@ -215,6 +280,18 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Override
 	public void setDefaultCategory(Category defaultCategory) {
 		this.defaultCategory = defaultCategory;
+	}
+
+	@Override
+	public List<Sku> getAllSkus() {
+		List<Sku> allSkus = new ArrayList<Sku>();
+		allSkus.add(getDefaultSku());
+		for (Sku additionalSku : additionalSkus) {
+			if (!additionalSku.getId().equals(getDefaultSku().getId())) {
+				allSkus.add(additionalSku);
+			}
+		}
+		return allSkus;
 	}
 
 	@Override
@@ -460,6 +537,22 @@ public class ProductImpl implements Product, Status, Locatable {
 		this.productAttributes = productAttributes;
 	}
 
+	@Override
+	public void setDefaultSku(Sku defaultSku) {
+		defaultSku.setDefaultProduct(this);
+		this.defaultSku = defaultSku;
+	}
+
+	@Override
+	public String getTaxCode() {
+		return getDefaultSku().getTaxCode();
+	}
+
+	@Override
+	public void setTaxCode(String taxCode) {
+		getDefaultSku().setTaxCode(taxCode);
+	}
+
 	/*
 	 * @Override public String getGeneratedUrl() { if (getDefaultCategory() !=
 	 * null && getDefaultCategory().getGeneratedUrl() != null) { String
@@ -594,91 +687,33 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Override
 	public String getGeneratedUrl() {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDescription(String description) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getLongDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLongDescription(String longDescription) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Date getActiveStartDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setActiveStartDate(Date activeStartDate) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Date getActiveEndDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setActiveEndDate(Date activeEndDate) {
-		// TODO Auto-generated method stub
-
+		 if (getDefaultCategory() != null && getDefaultCategory().getGeneratedUrl() != null) {
+	            String generatedUrl = getDefaultCategory().getGeneratedUrl();
+	            if (generatedUrl.endsWith("//")) {
+	                return generatedUrl + getUrlKey();
+	            } else {
+	                return generatedUrl + "//" + getUrlKey();
+	            }                       
+	        }
+	        return null;
 	}
 
 	@Override
 	public void clearDynamicPrices() {
-		// TODO Auto-generated method stub
-
+		for (Sku sku : getAllSkus()) {
+			sku.clearDynamicPrices();
+		}
 	}
 
 	@Override
 	public void setAllParentCategories(List<Category> allParentCategories) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public String getTaxCode() {
+	public Sku getDefaultSku() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setTaxCode(String taxCode) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

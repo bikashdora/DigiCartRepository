@@ -30,8 +30,6 @@
 	</beans:bean> 
 	
 	
-<!-- <beans:bean id="userDAO" class="com.org.bookservice.securitydao.UserDAOImpl" />
-<beans:bean id="userManager" class="org.digicart.core.catalog.service.UserManagerImpl" />
- -->
+
 
 </beans:beans>
