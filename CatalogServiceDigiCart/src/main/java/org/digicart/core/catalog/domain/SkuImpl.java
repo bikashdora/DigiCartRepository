@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.digicart.common.currency.domain.DigiCartCurrency;
-import org.digicart.common.i18n.service.DynamicTranslationProvider;
 import org.digicart.common.media.domain.Media;
 import org.digicart.common.money.Money;
 import org.digicart.common.util.DateUtil;
@@ -66,7 +65,9 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.springframework.util.ClassUtils;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * The Class SkuImpl is the default implementation of {@link Sku}. A SKU is a
@@ -96,6 +97,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "DC_SKU")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
+
+
 
 public class SkuImpl implements Sku {
     
@@ -178,6 +181,7 @@ public class SkuImpl implements Sku {
     @Cascade(value = {org.hibernate.annotations.CascadeType.ALL})
     @JoinColumn(name = "DEFAULT_PRODUCT_ID")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
+    @JsonBackReference
     protected Product defaultProduct;
 
     /**
@@ -189,12 +193,14 @@ public class SkuImpl implements Sku {
         joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID"), 
         inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
+    @JsonBackReference
     protected Product product;
 
     @OneToMany(mappedBy = "sku", targetEntity = SkuAttributeImpl.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="blProducts")
     @MapKey(name="name")
     @BatchSize(size = 50)
+    @JsonBackReference
     protected Map<String, SkuAttribute> skuAttributes = new HashMap<String, SkuAttribute>();
 
    /* @ManyToMany(targetEntity = ProductOptionValueImpl.class)

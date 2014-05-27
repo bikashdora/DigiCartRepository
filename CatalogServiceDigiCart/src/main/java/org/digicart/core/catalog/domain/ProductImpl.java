@@ -49,6 +49,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.SQLDelete;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * The Class ProductImpl is the default implementation of {@link Product}. A
  * product is a general description of an item that can be sold (for example: a
@@ -131,6 +133,7 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
 	@Cascade(value = { org.hibernate.annotations.CascadeType.ALL })
 	@JoinColumn(name = "DEFAULT_SKU_ID")
+	@JsonManagedReference
 	protected Sku defaultSku;
 
 	/*@OneToMany(fetch = FetchType.LAZY, targetEntity = SkuImpl.class, mappedBy = "product")
