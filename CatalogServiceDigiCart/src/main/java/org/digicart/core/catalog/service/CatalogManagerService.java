@@ -14,10 +14,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.digicart.common.currency.domain.DigiCartCurrency;
+import org.digicart.common.currency.domain.DigiCartCurrencyImpl;
 import org.digicart.core.catalog.domain.Category;
 import org.digicart.core.catalog.domain.Product;
+import org.digicart.core.catalog.domain.Sku;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Path("/catalogService")
@@ -135,7 +141,10 @@ public class CatalogManagerService {
 		checkNotNull(manufacturer);
 		checkNotNull(isFeaturedProduct);
 		checkNotNull(defaultCategory);
-		catalogService.createProduct(productName,description, longDescription, activeStartDate, activeEndDate, manufacturer, isFeaturedProduct, model, defaultCategory);		
+		Sku sku = catalogService.createSku(activeStartDate, activeEndDate, true,
+				 new DigiCartCurrencyImpl(),description,"NokiaXLMobileBlack",true);
+		catalogService.createProduct(productName,description, longDescription, activeStartDate, activeEndDate, manufacturer, isFeaturedProduct, model, defaultCategory,sku);
+		
 		
 	}
 	
@@ -171,12 +180,22 @@ public class CatalogManagerService {
 	@Path("getProductsForCategory")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List <Product> getProductsForCategory(
+	@Produces(MediaType.APPLICATION_XML)
+	public String  getProductsForCategory(
 			@FormParam("categoryName") String categoryName) {
 		// preconditions
 		checkNotNull(categoryName);
-		return catalogService.findProductsForCategory(categoryName);
+		//Type productType = new TypeToken<List<Product>>() {}.getType();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(catalogService.findProductsForCategory(categoryName));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		//return new Gson().toJson(catalogService.findProductsForCategory(categoryName),productType);
 	}
 	
 	
@@ -198,5 +217,21 @@ public class CatalogManagerService {
 		}
 		
 	}
+	
+	
+	
+	
+	public void createSku(Date activeStartDate, Date activeEndDate, Boolean available,
+			DigiCartCurrency currency, String description, String name,
+			Boolean taxable) {
+		// preconditions
+		
+	
+				
+		
+	}
+	
+	
+	
 		
 }

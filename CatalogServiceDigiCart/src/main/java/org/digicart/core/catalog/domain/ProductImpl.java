@@ -20,17 +20,13 @@
 package org.digicart.core.catalog.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,8 +34,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -49,7 +43,6 @@ import org.digicart.common.persistence.ArchiveStatus;
 import org.digicart.common.persistence.Status;
 import org.digicart.common.util.DateUtil;
 import org.digicart.common.web.Locatable;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -125,12 +118,12 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Index(name = "PRODUCT_CATEGORY_INDEX", columnNames = { "DEFAULT_CATEGORY_ID" })
 	protected Category defaultCategory;
 
-	@OneToMany(mappedBy = "product", targetEntity = ProductAttributeImpl.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	/*@OneToMany(mappedBy = "product", targetEntity = ProductAttributeImpl.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "blProducts")
 	@MapKey(name = "name")
 	@BatchSize(size = 50)
 	protected Map<String, ProductAttribute> productAttributes = new HashMap<String, ProductAttribute>();
-
+*/
 	@Embedded
 	protected ArchiveStatus archiveStatus = new ArchiveStatus();
 
@@ -140,10 +133,10 @@ public class ProductImpl implements Product, Status, Locatable {
 	@JoinColumn(name = "DEFAULT_SKU_ID")
 	protected Sku defaultSku;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = SkuImpl.class, mappedBy = "product")
+	/*@OneToMany(fetch = FetchType.LAZY, targetEntity = SkuImpl.class, mappedBy = "product")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
 	@BatchSize(size = 50)
-	protected List<Sku> additionalSkus = new ArrayList<Sku>();
+	protected List<Sku> additionalSkus = new ArrayList<Sku>();*/
 
 	@Override
 	public Long getId() {
@@ -282,7 +275,7 @@ public class ProductImpl implements Product, Status, Locatable {
 		this.defaultCategory = defaultCategory;
 	}
 
-	@Override
+	/*@Override
 	public List<Sku> getAllSkus() {
 		List<Sku> allSkus = new ArrayList<Sku>();
 		allSkus.add(getDefaultSku());
@@ -292,7 +285,7 @@ public class ProductImpl implements Product, Status, Locatable {
 			}
 		}
 		return allSkus;
-	}
+	}*/
 
 	@Override
 	@Deprecated
@@ -508,7 +501,7 @@ public class ProductImpl implements Product, Status, Locatable {
 
 	@Override
 	public String getUrlKey() {
-		if (urlKey != null) {
+		/*if (urlKey != null) {
 			return urlKey;
 		} else {
 			if (getName() != null) {
@@ -517,7 +510,7 @@ public class ProductImpl implements Product, Status, Locatable {
 				returnKey = returnKey.replaceAll(" ", "-");
 				return returnKey.replaceAll("[^A-Za-z0-9/-]", "");
 			}
-		}
+		}*/
 		return null;
 	}
 
@@ -526,7 +519,7 @@ public class ProductImpl implements Product, Status, Locatable {
 		this.urlKey = urlKey;
 	}
 
-	@Override
+	/*@Override
 	public Map<String, ProductAttribute> getProductAttributes() {
 		return productAttributes;
 	}
@@ -535,7 +528,7 @@ public class ProductImpl implements Product, Status, Locatable {
 	public void setProductAttributes(
 			Map<String, ProductAttribute> productAttributes) {
 		this.productAttributes = productAttributes;
-	}
+	}*/
 
 	@Override
 	public void setDefaultSku(Sku defaultSku) {
@@ -713,7 +706,17 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Override
 	public Sku getDefaultSku() {
 		// TODO Auto-generated method stub
+		 return defaultSku;
+	}
+
+	@Override
+	public List<Sku> getAllSkus() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+	
 
 }

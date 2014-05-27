@@ -48,7 +48,7 @@ import org.hibernate.annotations.Parameter;
  * <br>
  * This implementation uses a Hibernate implementation of JPA configured through annotations.
  * The Entity references the following tables:
- * BLC_SKU_ATTRIBUTES,
+ * DC_SKU_ATTRIBUTES,
  * 
  * 
  *   @see {@link SkuAttribute}, {@link SkuImpl}
@@ -56,7 +56,7 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="BLC_SKU_ATTRIBUTE")
+@Table(name="DC_SKU_ATTRIBUTE")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="blProducts")
 public class SkuAttributeImpl implements SkuAttribute {
 

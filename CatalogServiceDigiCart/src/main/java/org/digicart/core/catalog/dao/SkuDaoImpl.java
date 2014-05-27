@@ -19,17 +19,18 @@
  */
 package org.digicart.core.catalog.dao;
 
-import org.digicart.common.persistence.EntityConfiguration;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.digicart.common.currency.domain.DigiCartCurrency;
 import org.digicart.core.catalog.domain.Sku;
 //import org.digicart.core.catalog.domain.SkuFee;
 import org.digicart.core.catalog.domain.SkuImpl;
 import org.springframework.stereotype.Repository;
-
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.util.List;
 
 /**
  * {@inheritDoc}
@@ -85,6 +86,22 @@ public class SkuDaoImpl implements SkuDao {
             sku = readSkuById(sku.getId());
         }
         em.remove(sku);     
+    }
+    
+    @Override
+    public Sku create(Date activeStartDate,Date activeEndDate,Boolean available,DigiCartCurrency currency,String description,String name,Boolean taxable ) {
+    		Sku sku = new SkuImpl();
+    		sku.setActiveStartDate(activeStartDate);
+    		sku.setActiveEndDate(activeEndDate);
+    		sku.setAvailable(available);
+    		sku.setCurrency(currency);
+    		sku.setDescription(description);
+    		sku.setName(name);
+    		sku.setTaxable(taxable);
+    		em.persist(sku);
+    		
+    		
+    	return sku;
     }
 
     @Override

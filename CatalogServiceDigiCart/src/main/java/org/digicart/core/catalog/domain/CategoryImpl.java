@@ -241,7 +241,7 @@ public class CategoryImpl implements Category,Status {
         this.urlKey = urlKey;
     }
     
-    @Override
+  /*  @Override
     public void setUrl(String url) {
         this.url = url;
     }
@@ -253,7 +253,7 @@ public class CategoryImpl implements Category,Status {
         }
         return urlKey;
     }
-
+*/
     @Override
     public int hashCode() {
         int prime = 31;
@@ -462,6 +462,18 @@ public class CategoryImpl implements Category,Status {
 
 	@Override
 	public Map<String, List<Long>> getChildCategoryURLMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUrl(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getUrlKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}

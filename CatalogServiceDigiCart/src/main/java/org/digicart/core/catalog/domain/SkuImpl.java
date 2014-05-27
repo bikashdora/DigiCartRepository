@@ -36,23 +36,20 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.digicart.common.currency.domain.DigiCartCurrency;
-import org.digicart.common.currency.domain.DigiCartCurrencyImpl;
 import org.digicart.common.i18n.service.DynamicTranslationProvider;
 import org.digicart.common.media.domain.Media;
-import org.digicart.common.media.domain.MediaImpl;
 import org.digicart.common.money.Money;
 import org.digicart.common.util.DateUtil;
 import org.digicart.core.catalog.service.dynamic.DefaultDynamicSkuPricingInvocationHandler;
@@ -69,6 +66,8 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.springframework.util.ClassUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The Class SkuImpl is the default implementation of {@link Sku}. A SKU is a
  * specific item that can be sold including any specific attributes of the item
@@ -80,8 +79,8 @@ import org.springframework.util.ClassUtils;
  * your own version of {@link Sku}.<br>
  * <br>
  * This implementation uses a Hibernate implementation of JPA configured through
- * annotations. The Entity references the following tables: BLC_SKU,
- * BLC_SKU_IMAGE
+ * annotations. The Entity references the following tables: DC_SKU,
+ * DC_SKU_IMAGE
  *
  * !!!!!!!!!!!!!!!!!
  * <p>For admin required field validation, if this Sku is apart of an additionalSkus list (meaning it is not a defaultSku) then
@@ -95,7 +94,7 @@ import org.springframework.util.ClassUtils;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "BLC_SKU")
+@Table(name = "DC_SKU")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
 
 public class SkuImpl implements Sku {
@@ -105,8 +104,7 @@ public class SkuImpl implements Sku {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SKU_ID")
-    
+    @Column(name = "SKU_ID")    
     protected Long id;
 
     @Column(name = "SALE_PRICE", precision = 19, scale = 5)
@@ -127,11 +125,12 @@ public class SkuImpl implements Sku {
     @Column(name = "LONG_DESCRIPTION", length = Integer.MAX_VALUE - 1)
     protected String longDescription;
 
-    @Column(name = "TAX_CODE")
+    @Column(name = "TAX_CODE")   
     protected String taxCode;
 
     @Column(name = "TAXABLE_FLAG")
     @Index(name="SKU_TAXABLE_INDEX", columnNames={"TAXABLE_FLAG"})
+    @XmlTransient
     protected Character taxable;
 
     @Column(name = "DISCOUNTABLE_FLAG")
@@ -164,7 +163,7 @@ public class SkuImpl implements Sku {
     protected Boolean isMachineSortable = true;
     
    /* @ManyToMany(targetEntity = MediaImpl.class)
-    @JoinTable(name = "BLC_SKU_MEDIA_MAP", 
+    @JoinTable(name = "DC_SKU_MEDIA_MAP", 
         inverseJoinColumns = @JoinColumn(name = "MEDIA_ID", referencedColumnName = "MEDIA_ID"))
     @MapKeyColumn(name = "MAP_KEY")
     @Cascade(value = {org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
@@ -186,7 +185,7 @@ public class SkuImpl implements Sku {
      * additional Skus for a Product (for Skus based on ProductOptions)
      */
     @ManyToOne(optional = true, targetEntity = ProductImpl.class)
-    @JoinTable(name = "BLC_PRODUCT_SKU_XREF", 
+    @JoinTable(name = "DC_PRODUCT_SKU_XREF", 
         joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID"), 
         inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
@@ -199,7 +198,7 @@ public class SkuImpl implements Sku {
     protected Map<String, SkuAttribute> skuAttributes = new HashMap<String, SkuAttribute>();
 
    /* @ManyToMany(targetEntity = ProductOptionValueImpl.class)
-    @JoinTable(name = "BLC_SKU_OPTION_VALUE_XREF", 
+    @JoinTable(name = "DC_SKU_OPTION_VALUE_XREF", 
         joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID"), 
         inverseJoinColumns = @JoinColumn(name = "PRODUCT_OPTION_VALUE_ID",referencedColumnName = "PRODUCT_OPTION_VALUE_ID"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
@@ -207,7 +206,7 @@ public class SkuImpl implements Sku {
     protected List<ProductOptionValue> productOptionValues = new ArrayList<ProductOptionValue>();
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = SkuFeeImpl.class)
-    @JoinTable(name = "BLC_SKU_FEE_XREF",
+    @JoinTable(name = "DC_SKU_FEE_XREF",
             joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID", nullable = true),
             inverseJoinColumns = @JoinColumn(name = "SKU_FEE_ID", referencedColumnName = "SKU_FEE_ID", nullable = true))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
@@ -216,7 +215,7 @@ public class SkuImpl implements Sku {
     protected List<SkuFee> fees = new ArrayList<SkuFee>();*/
 
     /*@ElementCollection
-    @CollectionTable(name = "BLC_SKU_FULFILLMENT_FLAT_RATES", 
+    @CollectionTable(name = "DC_SKU_FULFILLMENT_FLAT_RATES", 
         joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID", nullable = true))
     @MapKeyJoinColumn(name = "FULFILLMENT_OPTION_ID", referencedColumnName = "FULFILLMENT_OPTION_ID")
     @MapKeyClass(FulfillmentOptionImpl.class)
@@ -228,7 +227,7 @@ public class SkuImpl implements Sku {
     protected Map<FulfillmentOption, BigDecimal> fulfillmentFlatRates = new HashMap<FulfillmentOption, BigDecimal>();
 
     @ManyToMany(targetEntity = FulfillmentOptionImpl.class)
-    @JoinTable(name = "BLC_SKU_FULFILLMENT_EXCLUDED",
+    @JoinTable(name = "DC_SKU_FULFILLMENT_EXCLUDED",
             joinColumns = @JoinColumn(name = "SKU_ID", referencedColumnName = "SKU_ID"),
             inverseJoinColumns = @JoinColumn(name = "FULFILLMENT_OPTION_ID",referencedColumnName = "FULFILLMENT_OPTION_ID"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
@@ -362,7 +361,7 @@ public class SkuImpl implements Sku {
     public Money getRetailPrice() {
         Money tmpRetailPrice = getRetailPriceInternal();
         if (tmpRetailPrice == null) {
-            throw new IllegalStateException("Retail price on Sku with id " + getId() + " was null");
+            //throw new IllegalStateException("Retail price on Sku with id " + getId() + " was null");
         }
         return tmpRetailPrice;
     }
@@ -436,7 +435,8 @@ public class SkuImpl implements Sku {
             return lookupDefaultSku().getName();
         }
         
-        return DynamicTranslationProvider.getValue(this, "name", name);
+        //return DynamicTranslationProvider.getValue(this, "name", name);
+        return  name ;
     }
 
     @Override
@@ -450,7 +450,8 @@ public class SkuImpl implements Sku {
             return lookupDefaultSku().getDescription();
         }
         
-        return DynamicTranslationProvider.getValue(this, "description", description);
+        //return DynamicTranslationProvider.getValue(this, "description", description);
+        return description ;
     }
 
     @Override
@@ -464,7 +465,8 @@ public class SkuImpl implements Sku {
             return lookupDefaultSku().getLongDescription();
         }
         
-        return DynamicTranslationProvider.getValue(this, "longDescription", longDescription);
+        //return DynamicTranslationProvider.getValue(this, "longDescription", longDescription);
+        return longDescription;
     }
 
     @Override
@@ -473,6 +475,7 @@ public class SkuImpl implements Sku {
     }
 
     @Override
+    @JsonIgnore
     public Boolean isTaxable() {
         if (taxable == null) {
             if (hasDefaultSku()) {
@@ -498,6 +501,7 @@ public class SkuImpl implements Sku {
     }
 
     @Override
+    @JsonIgnore
     public Boolean isDiscountable() {
         if (discountable == null) {
             if (hasDefaultSku()) {
@@ -701,6 +705,7 @@ public class SkuImpl implements Sku {
 
     @Override
     @Deprecated
+    @JsonIgnore
     public Boolean isMachineSortable() {
         if (isMachineSortable == null && hasDefaultSku()) {
             return lookupDefaultSku().isMachineSortable();
@@ -901,9 +906,10 @@ public class SkuImpl implements Sku {
 	
 
 	@Override
+	@JsonIgnore
 	public Boolean isAvailable() {
 		// TODO Auto-generated method stub
-		return null;
+		return true;
 	}
 
 	@Override

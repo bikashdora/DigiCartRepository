@@ -8,10 +8,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.digicart.common.currency.domain.DigiCartCurrency;
 import org.digicart.core.catalog.dao.CategoryDao;
 import org.digicart.core.catalog.dao.ProductDao;
+import org.digicart.core.catalog.dao.SkuDao;
 import org.digicart.core.catalog.domain.Category;
 import org.digicart.core.catalog.domain.Product;
+import org.digicart.core.catalog.domain.Sku;
 import org.digicart.core.catalog.service.type.ProductType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +31,10 @@ public class CatalogServiceImpl implements CatalogService {
     @Resource(name="blProductDao")
     protected ProductDao productDao;
 
-   /* @Resource(name="blSkuDao")
+    @Resource(name="blSkuDao")
     protected SkuDao skuDao;
     
-    @Resource(name="blProductOptionDao")
+   /* @Resource(name="blProductOptionDao")
     protected ProductOptionDao productOptionDao;
 
     @Resource(name = "blCatalogServiceExtensionManager")
@@ -254,7 +257,7 @@ public class CatalogServiceImpl implements CatalogService {
         return skuDao.saveSkuFee(fee);
     }
     */
-   /* @Override
+    @Override
     public List<Sku> findSkusByIds(List<Long> ids) {
         return skuDao.readSkusById(ids);
     }
@@ -265,7 +268,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     public void setSkuDao(SkuDao skuDao) {
         this.skuDao = skuDao;
-    }*/
+    }
 
     @Override
     @Transactional("blTransactionManager")
@@ -317,11 +320,17 @@ public class CatalogServiceImpl implements CatalogService {
 
 	
     
-   /* @Override
+    @Override
     public Sku createSku() {
         return skuDao.create();
-    }*/
+    }
     
+	  @Override
+	  @Transactional("blTransactionManager")
+    public Sku createSku(Date activeStartDate,Date activeEndDate,Boolean available,DigiCartCurrency currency,String description,String name,Boolean taxable) {
+        return skuDao.create(activeStartDate, activeEndDate, available, currency, description, name, taxable);
+    }
+	
     @Override
     public Product createProduct(ProductType productType) {
         return productDao.create(productType);
@@ -329,8 +338,8 @@ public class CatalogServiceImpl implements CatalogService {
     
     @Override
     @Transactional("blTransactionManager")
-    public void createProduct(String productName,String description,String longDescription,Date activeStartDate,Date activeEndDate,String manufacturer,Boolean isFeaturedProduct,String model,String defaultCategory) {
-    	this.productDao.createProduct(productName,description,longDescription,activeStartDate,activeEndDate,manufacturer,isFeaturedProduct,model,defaultCategory);
+    public void createProduct(String productName,String description,String longDescription,Date activeStartDate,Date activeEndDate,String manufacturer,Boolean isFeaturedProduct,String model,String defaultCategory,Sku sku) {
+    	this.productDao.createProduct(productName,description,longDescription,activeStartDate,activeEndDate,manufacturer,isFeaturedProduct,model,defaultCategory,sku);
     	
     }
     
@@ -368,6 +377,7 @@ public class CatalogServiceImpl implements CatalogService {
 	public List<Product> findProductsForCategory(String categoryName) {
 		return productDao.readProductsByCategoryName(categoryName);
 	}
+
 
    /* @SuppressWarnings("rawtypes")
 	@Override

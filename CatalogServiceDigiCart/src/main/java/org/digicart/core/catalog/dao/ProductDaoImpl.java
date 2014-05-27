@@ -22,8 +22,11 @@ package org.digicart.core.catalog.dao;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -52,7 +55,11 @@ import org.digicart.common.util.DialectHelper;
 import org.digicart.core.catalog.domain.Category;
 import org.digicart.core.catalog.domain.CategoryProductXref;
 import org.digicart.core.catalog.domain.CategoryProductXrefImpl;
+import org.digicart.core.catalog.domain.CategoryXref;
+import org.digicart.core.catalog.domain.CategoryXrefImpl;
 import org.digicart.core.catalog.domain.Product;
+import org.digicart.core.catalog.domain.ProductAttribute;
+import org.digicart.core.catalog.domain.ProductAttributeImpl;
 import org.digicart.core.catalog.domain.ProductImpl;
 import org.digicart.core.catalog.domain.Sku;
 import org.digicart.core.catalog.service.type.ProductType;
@@ -96,21 +103,39 @@ public class ProductDaoImpl implements ProductDao {
 	}
 	
 	 @Override
-	    public void createProduct(String productName,String description,String longDescription,Date activeStartDate,Date activeEndDate,String manufacturer,Boolean isFeaturedProduct,String model,String defaultCategory) {
+	    public void createProduct(String productName,String description,String longDescription,Date activeStartDate,Date activeEndDate,String manufacturer,Boolean isFeaturedProduct,String model,String defaultCategory,Sku sku) {
 	    	
 	    	Product product = new ProductImpl();
+	    	Sku skumerged = em.merge(sku);
+	    	Category category= readCategoryByName(defaultCategory);	    		    	
+	    	product.setDefaultSku(skumerged);
 	    	product.setName(productName);
 	    	product.setActiveEndDate(activeEndDate);
 	    	product.setActiveStartDate(activeStartDate);
-	    	product.setDefaultCategory(readCategoryByName(defaultCategory));
+	    	product.setDefaultCategory(category);
 	    	product.setCanSellWithoutOptions(true);
 	    	product.setDescription(description);
 	    	product.setLongDescription(longDescription);
 	    	product.setManufacturer(manufacturer);
 	    	product.setModel(model);
 	    	product.setFeaturedProduct(false);
-	    	em.persist(product);
-	    	
+	       	em.persist(product);	    	
+	    	skumerged.setDefaultProduct(product);
+	    	skumerged.setProduct(product);
+	    	em.merge(skumerged);
+	    	CategoryProductXref categoryProductXref = new CategoryProductXrefImpl();
+	    	categoryProductXref.setCategory(category);
+	    	categoryProductXref.setProduct(product);
+	    	em.persist(categoryProductXref);
+	    	/*Product prodmerged = em.merge(product);
+	    	ProductAttribute prodAttrib = new ProductAttributeImpl();
+	    	prodAttrib.setName("DUALSIM");
+	    	prodAttrib.setValue("YES");
+	    	prodAttrib.setSearchable(true);
+	    	prodAttrib.setProduct(prodmerged);
+	    	Map<String, ProductAttribute> productAttributes = new HashMap<String, ProductAttribute>();
+	    	productAttributes.put("DUALSIM",prodAttrib);	    	
+	    	    	*/
 	    	
 	    }
 
@@ -151,7 +176,7 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public List<Product> readProductsByName(String searchName) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_PRODUCTS_BY_NAME", Product.class);
+				"DC_READ_PRODUCTS_BY_NAME", Product.class);
 		query.setParameter("name", searchName + '%');
 		query.setHint(QueryHints.HINT_CACHEABLE, true);
 		query.setHint(QueryHints.HINT_CACHE_REGION, "query.Catalog");
@@ -163,7 +188,7 @@ public class ProductDaoImpl implements ProductDao {
 	public List<Product> readProductsByName(@NotNull String searchName,
 			@NotNull int limit, @NotNull int offset) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_PRODUCTS_BY_NAME", Product.class);
+				"DC_READ_PRODUCTS_BY_NAME", Product.class);
 		query.setParameter("name", searchName + '%');
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -209,7 +234,7 @@ public class ProductDaoImpl implements ProductDao {
 	protected List<Product> readActiveProductsByCategoryInternal(
 			Long categoryId, Date currentDate) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_ACTIVE_PRODUCTS_BY_CATEGORY", Product.class);
+				"DC_READ_ACTIVE_PRODUCTS_BY_CATEGORY", Product.class);
 		query.setParameter("categoryId",categoryId);
 		query.setParameter("currentDate", currentDate);
 		query.setHint(QueryHints.HINT_CACHEABLE, true);
@@ -504,7 +529,7 @@ public class ProductDaoImpl implements ProductDao {
 	public List<Product> readActiveProductsByCategoryInternal(Long categoryId,
 			Date currentDate, int limit, int offset) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_ACTIVE_PRODUCTS_BY_CATEGORY", Product.class);
+				"DC_READ_ACTIVE_PRODUCTS_BY_CATEGORY", Product.class);
 		query.setParameter("categoryId",categoryId);
 		query.setParameter("currentDate", currentDate);
 		query.setFirstResult(offset);
@@ -518,7 +543,7 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public List<Product> readProductsByCategory(Long categoryId) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_PRODUCTS_BY_CATEGORY", Product.class);
+				"DC_READ_PRODUCTS_BY_CATEGORY", Product.class);
 		query.setParameter("categoryId",categoryId);
 		query.setHint(QueryHints.HINT_CACHEABLE, true);
 		query.setHint(QueryHints.HINT_CACHE_REGION, "query.Catalog");
@@ -533,12 +558,13 @@ public class ProductDaoImpl implements ProductDao {
 		if(category==null)
 			return null;
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_PRODUCTS_BY_CATEGORY", Product.class);
+				"DC_READ_PRODUCTS_BY_CATEGORY", Product.class);
 		query.setParameter("categoryId",category.getId());
 		query.setHint(QueryHints.HINT_CACHEABLE, true);
 		query.setHint(QueryHints.HINT_CACHE_REGION, "query.Catalog");
+		List<Product> resultList = query.getResultList();
 
-		return query.getResultList();
+		return resultList;
 	}
 
 
@@ -546,7 +572,7 @@ public class ProductDaoImpl implements ProductDao {
 	public List<Product> readProductsByCategory(Long categoryId, int limit,
 			int offset) {
 		TypedQuery<Product> query = em.createNamedQuery(
-				"BC_READ_PRODUCTS_BY_CATEGORY", Product.class);
+				"DC_READ_PRODUCTS_BY_CATEGORY", Product.class);
 		query.setParameter("categoryId",categoryId);
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -582,7 +608,7 @@ public class ProductDaoImpl implements ProductDao {
 	 * @Override public List<ProductBundle> readAutomaticProductBundles() { Date
 	 * currentDate = getCurrentDateAfterFactoringInDateResolution();
 	 * TypedQuery<ProductBundle> query =
-	 * em.createNamedQuery("BC_READ_AUTOMATIC_PRODUCT_BUNDLES",
+	 * em.createNamedQuery("DC_READ_AUTOMATIC_PRODUCT_BUNDLES",
 	 * ProductBundle.class); query.setParameter("currentDate", currentDate);
 	 * query.setParameter("autoBundle", Boolean.TRUE);
 	 * query.setHint(QueryHints.HINT_CACHEABLE, true);
@@ -614,7 +640,7 @@ public class ProductDaoImpl implements ProductDao {
 		String urlKey = uri.substring(uri.lastIndexOf('/'));
 		Query query;
 
-		query = em.createNamedQuery("BC_READ_PRODUCTS_BY_OUTGOING_URL");
+		query = em.createNamedQuery("DC_READ_PRODUCTS_BY_OUTGOING_URL");
 		query.setParameter("url", uri);
 		query.setParameter("urlKey", urlKey);
 		query.setParameter("currentDate",
@@ -761,4 +787,6 @@ public class ProductDaoImpl implements ProductDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 }

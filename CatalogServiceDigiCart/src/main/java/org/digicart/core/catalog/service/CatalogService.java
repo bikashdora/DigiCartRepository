@@ -25,8 +25,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.digicart.common.currency.domain.DigiCartCurrency;
 import org.digicart.core.catalog.domain.Category;
 import org.digicart.core.catalog.domain.Product;
+import org.digicart.core.catalog.domain.Sku;
 import org.digicart.core.catalog.service.type.ProductType;
 
 //import org.digicart.catalog.domain.SkuFee;
@@ -262,16 +264,27 @@ public interface CatalogService {
 	public List<Category> findAllSubCategories(String categoryName);
 
 
-	void createProduct(String productName, String description,
-			String longDescription, Date activeStartDate, Date activeEndDate,
-			String manufacturer, Boolean isFeaturedProduct, String model,
-			String defaultCategory);
 
 	public void removeCategory(String categoryName);
 
 	public List<Product> findActiveProductsByCategory(String categoryName);
 
 	public void removeProduct(Long productId) throws Exception;
+
+	public List<Sku> findSkusByIds(List<Long> ids);
+
+	public Sku createSku();
+
+	
+
+	public void createProduct(String productName, String description,
+			String longDescription, Date activeStartDate, Date activeEndDate,
+			String manufacturer, Boolean isFeaturedProduct, String model,
+			String defaultCategory, Sku defaultsku);
+
+	public Sku createSku(Date activeStartDate, Date activeEndDate, Boolean available,
+			DigiCartCurrency currency, String description, String name,
+			Boolean taxable);
 	
 	
 	

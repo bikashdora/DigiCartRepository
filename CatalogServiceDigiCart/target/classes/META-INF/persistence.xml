@@ -16,6 +16,7 @@
 	<persistence-unit name="blPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		 <mapping-file>META-INF/config/dc/jpa/domain/Category.orm.xml</mapping-file>
+		 <mapping-file>META-INF/config/dc/jpa/domain/Product.orm.xml</mapping-file>
 		<class>org.digicart.common.currency.domain.DigiCartCurrencyImpl</class>
 		<class>org.digicart.core.catalog.domain.CategoryImpl</class>		
 		<class>org.digicart.core.catalog.domain.ProductImpl</class>

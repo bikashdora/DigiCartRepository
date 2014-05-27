@@ -4,12 +4,13 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
 
- <!--  <init-param>
+<!--   <init-param>
         <param-name>contextClass</param-name>
         <param-value>
             org.springframework.web.context.support.AnnotationConfigWebApplicationContext
         </param-value>
     </init-param> -->
+    
     <context-param>
 		<param-name>log4jConfigLocation</param-name>
 		<param-value>/WEB-INF/logging/log4j.xml</param-value>
@@ -34,7 +35,7 @@
     <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>org.digicart.core.catalog.service.CatalogManagerService</param-value>
+      <param-value>org.digicart.core.catalog.service</param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>

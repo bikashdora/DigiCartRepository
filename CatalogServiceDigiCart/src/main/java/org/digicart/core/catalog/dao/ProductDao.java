@@ -9,6 +9,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.digicart.core.catalog.domain.Product;
+import org.digicart.core.catalog.domain.Sku;
 import org.digicart.core.catalog.service.type.ProductType;
 import org.digicart.core.search.domain.ProductSearchCriteria;
 
@@ -300,13 +301,16 @@ public interface ProductDao {
 
 	public Product createProduct(Product product);
 
-	public void createProduct(String productName,String description, String longDescription,
-			Date activeStartDate, Date activeEndDate, String manufacturer,
-			Boolean isFeaturedProduct, String model, String defaultCategory);
+	
 
 	public List<Product> readProductsByCategoryName(String categoryName);
 
 	public List<Product> readActiveProductsByCategory(String categoryName);
 
 	public void delete(Long productId) throws Exception;
+
+	void createProduct(String productName, String description,
+			String longDescription, Date activeStartDate, Date activeEndDate,
+			String manufacturer, Boolean isFeaturedProduct, String model,
+			String defaultCategory, Sku sku);
 }

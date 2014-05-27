@@ -19,9 +19,12 @@
  */
 package org.digicart.core.catalog.dao;
 
+import org.digicart.common.currency.domain.DigiCartCurrency;
 import org.digicart.core.catalog.domain.Sku;
 //import org.digicart.core.catalog.domain.SkuFee;
 
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -102,5 +105,9 @@ public interface SkuDao {
      * @return a {@code Sku} instance based on the Broadleaf entity configuration.
      */
     public Sku create();
+
+    public Sku create(Date activeStartDate, Date activeEndDate, Boolean available,
+			DigiCartCurrency currency, String description, String name,
+			Boolean taxable);
     
 }
