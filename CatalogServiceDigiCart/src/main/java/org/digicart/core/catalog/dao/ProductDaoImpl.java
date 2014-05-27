@@ -127,15 +127,16 @@ public class ProductDaoImpl implements ProductDao {
 	    	categoryProductXref.setCategory(category);
 	    	categoryProductXref.setProduct(product);
 	    	em.persist(categoryProductXref);
-	    	/*Product prodmerged = em.merge(product);
+	    	Product prodmerged = em.merge(product);
 	    	ProductAttribute prodAttrib = new ProductAttributeImpl();
 	    	prodAttrib.setName("DUALSIM");
 	    	prodAttrib.setValue("YES");
 	    	prodAttrib.setSearchable(true);
 	    	prodAttrib.setProduct(prodmerged);
 	    	Map<String, ProductAttribute> productAttributes = new HashMap<String, ProductAttribute>();
-	    	productAttributes.put("DUALSIM",prodAttrib);	    	
-	    	    	*/
+	    	productAttributes.put("DUALSIM",prodAttrib);
+	    	prodmerged.setProductAttributes(productAttributes);
+	    	    	
 	    	
 	    }
 

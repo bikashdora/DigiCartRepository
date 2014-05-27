@@ -493,13 +493,13 @@ public interface Product extends Serializable {
      *
      * @return the attributes for this Product
      */
-   // public Map<String, ProductAttribute> getProductAttributes();
+    public Map<String, ProductAttribute> getProductAttributes();
 
     /**
      * Sets a generic list of key-value pairs for Product
      * @param productAttributes
      */
-   // public void setProductAttributes(Map<String, ProductAttribute> productAttributes);
+    public void setProductAttributes(Map<String, ProductAttribute> productAttributes);
 
     /**
      * Gets the promotional message for this Product. For instance, this could be a limited-time

@@ -37,6 +37,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * The Class ProductAttributeImpl.
  */
@@ -74,6 +77,7 @@ public class ProductAttributeImpl implements ProductAttribute {
     @ManyToOne(targetEntity = ProductImpl.class, optional=false)
     @JoinColumn(name = "PRODUCT_ID")
     @Index(name="PRODUCTATTRIBUTE_INDEX", columnNames={"PRODUCT_ID"})
+    @JsonBackReference
     protected Product product;
     
     /* (non-Javadoc)
