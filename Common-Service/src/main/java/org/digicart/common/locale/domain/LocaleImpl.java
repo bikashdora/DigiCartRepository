@@ -38,7 +38,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "BLC_LOCALE")
+@Table(name = "DC_LOCALE")
 @Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="blCMSElements")
 
 public class LocaleImpl implements Locale {

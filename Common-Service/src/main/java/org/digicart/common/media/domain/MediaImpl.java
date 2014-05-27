@@ -37,7 +37,7 @@ import javax.persistence.Table;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="BLC_MEDIA")
+@Table(name="DC_MEDIA")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="blStandardElements")
 
 public class MediaImpl implements Media {

@@ -47,7 +47,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="BLC_CATALOG")
+@Table(name="DC_CATALOG")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="blStandardElements")
 
 public class CatalogImpl implements Catalog {
@@ -71,7 +71,7 @@ public class CatalogImpl implements Catalog {
     protected String name;
 
     @ManyToMany(targetEntity = SiteImpl.class)
-    @JoinTable(name = "BLC_SITE_CATALOG", joinColumns = @JoinColumn(name = "CATALOG_ID"), inverseJoinColumns = @JoinColumn(name = "SITE_ID"))
+    @JoinTable(name = "DC_SITE_CATALOG", joinColumns = @JoinColumn(name = "CATALOG_ID"), inverseJoinColumns = @JoinColumn(name = "SITE_ID"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="blStandardElements")
     @BatchSize(size = 50)
     protected List<Site> sites = new ArrayList<Site>();
