@@ -79,7 +79,7 @@ public class SkuAttributeImpl implements SkuAttribute {
     protected String value;
 
     /** The searchable. */
-    @Column(name = "SEARCHABLE")
+    @Column(name = "SEARCHABLE",columnDefinition = "BIT", length = 1)
     protected Boolean searchable = false;
   
     /** The sku. */

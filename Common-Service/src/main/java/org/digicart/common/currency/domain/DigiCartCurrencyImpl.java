@@ -51,7 +51,7 @@ public class DigiCartCurrencyImpl implements DigiCartCurrency {
     
     protected String friendlyName;
 
-    @Column(name = "DEFAULT_FLAG")
+    @Column(name = "DEFAULT_FLAG",columnDefinition = "BIT", length = 1)
     
     protected Boolean defaultFlag = false;
 

@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Path("/catalogService")
 public class CatalogManagerService {
 
-	@Autowired
+	 @Autowired
 	CatalogService catalogService;
 
 	@Path("createCategory")
@@ -218,6 +219,30 @@ public class CatalogManagerService {
 		
 	}
 	
+	@Path("getDefaultSkusProductsForCategory/{categoryName}")
+	@GET	
+	//@Produces({MediaType.APPLICATION_JSON})
+	@Produces("application/json")
+	public List<Sku>  getDefaultSkusProductsForCategory(
+			@PathParam("categoryName") String categoryName) {
+		// preconditions
+		checkNotNull(categoryName);
+		//Type productType = new TypeToken<List<Product>>() {}.getType();
+		/*ObjectMapper mapper = new ObjectMapper();
+		try {
+			//return mapper.writeValueAsString(catalogService.findDefaultSkusProductsForCategory(categoryName));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		//return catalogService.findDefaultSkusProductsForCategory(categoryName);
+		//System.out.println("failure");
+		return catalogService.findDefaultSkusProductsForCategory(categoryName);
+		//return null;
+		//return new Gson().toJson(catalogService.findProductsForCategory(categoryName),productType);
+	}
+	
+	
 	
 	
 	
@@ -225,7 +250,6 @@ public class CatalogManagerService {
 			DigiCartCurrency currency, String description, String name,
 			Boolean taxable) {
 		// preconditions
-		
 	
 				
 		

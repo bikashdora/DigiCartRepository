@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,27 +37,27 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.digicart.common.currency.domain.DigiCartCurrency;
-import org.digicart.common.media.domain.Media;
 import org.digicart.common.money.Money;
 import org.digicart.common.util.DateUtil;
 import org.digicart.core.catalog.service.dynamic.DefaultDynamicSkuPricingInvocationHandler;
 import org.digicart.core.catalog.service.dynamic.DynamicSkuPrices;
 import org.digicart.core.catalog.service.dynamic.SkuActiveDateConsiderationContext;
 import org.digicart.core.catalog.service.dynamic.SkuPricingConsiderationContext;
-//import org.digicart.core.order.domain.FulfillmentOption;
-//import org.digicart.core.order.domain.FulfillmentOptionImpl;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -67,7 +68,6 @@ import org.springframework.util.ClassUtils;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * The Class SkuImpl is the default implementation of {@link Sku}. A SKU is a
@@ -97,7 +97,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "DC_SKU")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
-
+@XmlRootElement
 
 
 public class SkuImpl implements Sku {
@@ -165,14 +165,14 @@ public class SkuImpl implements Sku {
     @Column(name = "IS_MACHINE_SORTABLE",columnDefinition = "BIT",length = 1)
     protected Boolean isMachineSortable = true;
     
-   /* @ManyToMany(targetEntity = MediaImpl.class)
+    @ManyToMany(targetEntity = MediaImpl.class,fetch=FetchType.EAGER)
     @JoinTable(name = "DC_SKU_MEDIA_MAP", 
         inverseJoinColumns = @JoinColumn(name = "MEDIA_ID", referencedColumnName = "MEDIA_ID"))
     @MapKeyColumn(name = "MAP_KEY")
     @Cascade(value = {org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blProducts")
     @BatchSize(size = 50)
-    protected Map<String, Media> skuMedia = new HashMap<String, Media>();*/
+    protected Map<String, Media> skuMedia = new HashMap<String, Media>();
 
     /**
      * This will be non-null if and only if this Sku is the default Sku for a Product
@@ -664,7 +664,7 @@ public class SkuImpl implements Sku {
         return this.isActive() && (product == null || product.isActive()) && (category == null || category.isActive());
     }
 
-   /* @Override
+    @Override
     public Map<String, Media> getSkuMedia() {
         if (skuMedia == null || skuMedia.isEmpty()) {
             if (hasDefaultSku()) {
@@ -678,7 +678,7 @@ public class SkuImpl implements Sku {
     public void setSkuMedia(Map<String, Media> skuMedia) {
         this.skuMedia = skuMedia;
     }
-*/
+
     @Override
     public Product getDefaultProduct() {
         return defaultProduct;
@@ -918,17 +918,7 @@ public class SkuImpl implements Sku {
 		return true;
 	}
 
-	@Override
-	public Map<String, Media> getSkuMedia() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSkuMedia(Map<String, Media> skuMedia) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void setCurrency(DigiCartCurrency currency) {

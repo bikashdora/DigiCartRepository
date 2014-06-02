@@ -24,11 +24,12 @@
 		<class>org.digicart.core.catalog.domain.CategoryProductXrefImpl</class>
 		<class>org.digicart.core.catalog.domain.CategoryXrefImpl</class>
 		<class>org.digicart.core.catalog.domain.SkuAttributeImpl</class>
-		<class>org.digicart.core.catalog.domain.SkuImpl</class>		
+		<class>org.digicart.core.catalog.domain.SkuImpl</class>
+		<class>org.digicart.core.catalog.domain.MediaImpl</class>		
 		 <exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
 			<property name="hibernate.default_schema" value="digicart" />
 			<property name="hibernate.transaction.flush_before_completion"
 				value="false" />

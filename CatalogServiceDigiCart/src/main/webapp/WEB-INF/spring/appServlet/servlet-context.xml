@@ -21,7 +21,8 @@
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
-
+	<!-- Images Mapping -->
+	<resources location="/cmsstatic/" mapping="/cmsstatic/**" />
 
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 

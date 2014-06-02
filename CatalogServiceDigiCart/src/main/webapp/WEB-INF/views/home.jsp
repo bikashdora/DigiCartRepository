@@ -2,86 +2,106 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page session="false"%>
 <html>
+<h1>Catalog of Products</h1>
 <head>
-
-<title>Library Book Maintenance</title>
+<meta charset="utf-8">
+<title>jQuery UI Menu - Default functionality</title>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script>
+  $(function() {
+    $( "#menu" ).menu();
+  });
+  </script>
+<style>
+.ui-menu {
+	width: 150px;
+}
+</style>
 </head>
-<h2>Book Data Form</h2>
-<a href="/LibraryBook/logout">Logout</a>
-<form:form method="POST" modelAttribute="book" 	action="/LibraryBook/rest/book/create">
-	<table>
-		<tr>
-			<td><label for="bookName">Book Name: </label></td>
-			<td><form:input path="bookName" id="bookName"/></td>
-			<td><form:errors path="bookName" cssclass="error"></form:errors></td>
-		</tr>
+<body>
 
-		<tr>
-			<td><label for="bookAuthor">Author: </label></td>
-			<td><form:input path="author" id="bookAuthor"/></td>
-			<td><form:errors path="author" cssclass="error"></form:errors></td>
-		</tr>
+	<ul id="menu">
+		<li><a href="#">Electronics</a>
+			<ul>
+				<!-- <li class="ui-state-disabled"><a href="#">Ada</a></li> -->
+				<li><a href="#" id="Mobiles">Mobiles</a></li>
+				<li><a href="#">TV</a></li>
+				<li><a href="#">Computers</a></li>
+				<li><a href="#">Cameras</a></li>
+			</ul></li>
+		<li><a href="#">Men</a>
+			<ul>
+				<!-- <li class="ui-state-disabled"><a href="#">Ada</a></li> -->
+				<li><a href="#">Jeans</a></li>
+				<li><a href="#">Shirts</a></li>
+				<li><a href="#">Watches</a></li>
+				<li><a href="#">FootWears</a></li>
+			</ul></li>
+		<li><a href="#">Women</a>
+			<ul>
+				<!-- <li class="ui-state-disabled"><a href="#">Ada</a></li> -->
+				<li><a href="#">Dresses</a></li>
+				<li><a href="#">Sunglasses</a></li>
+				<li><a href="#">Watches</a></li>
+				<li><a href="#">Sarees</a></li>
+			</ul>
+	</ul>
 
-		<tr>
-			<td><label for="bookPrice">Price: </label></td>
-			<td><form:input path="price" id="bookPrice" /></td>
-			<td><form:errors path="price" cssclass="error"></form:errors></td>
-		</tr>
-		<tr>
-			<td><label for="ratingOptions">Rating: </label></td>
-			<td><form:select path="rating" id="ratingOptions">
-					<form:option value="">Select Rating</form:option>
-					<form:option value="POOR">poor</form:option>
-					<form:option value="GOOD">good</form:option>
-					<form:option value="VERYGOOD">verygood</form:option>
-					<form:option value="AWESOME">awesome</form:option>
-				</form:select></td>
-			<td><form:errors path="rating" cssclass="error"></form:errors></td>
-		</tr>
 
-		<tr>
-			<td><label for="bookISBN">ISBN: </label></td>
-			<td><form:input path="ISBN" id="bookISBN"/></td>
-			<td><form:errors path="ISBN" cssclass="error"></form:errors></td>
-		</tr>
+	<div id="images"></div>
 
-		<tr>
-			<td><label for="bookReleaseDate">ReleaseDate: </label></td>
-			<td><form:input path="releaseDate" id="bookReleaseDate"
-					placeholder="dd/MM/yyyy" /></td>
-			<td><form:errors path="releaseDate" cssclass="error"></form:errors></td>
-		</tr>
+	<script>
+	
+	
+	/* $("#yourLink").click(function() {
+  var mobilesAPI = "http://localhost:8080/CatalogService/service/catalogService/getDefaultSkusProductsForCategory/Mobiles";
+  $.getJSON(mobilesAPI)
+    .done(function( data ) {
+      $.each( data.items, function( i, item ) {
+    	   '<li><img src= "' + this.skuMedia.primary.url + '"></li>'.appendTo( "#images" );
+        
+      });
+    });
+})(); */
+	
+	
+$("#Mobiles").click(function () {
+	  var jsonURL = "http://localhost:8080/CatalogService/getDefaultSkusProductsForCategory/Mobiles";
+	  $.getJSON(jsonURL, function (json) 
+	  {
+	    var imgList= "";
+	   // json=$.parseJSON(json);
+	    console.log ("Data0Id: " + json[0].skuMedia.primary.url);
+	    $.each(json, function (i,item) {
+	    	//imgList += '<li><img src= "' + item.skuMedia.primary.url + '"></li>';
+	    	//var imageLink = item.skuMedia.primary.url;
+	    	//imgList += '<li><img src="<c:url value='item.skuMedia.primary.url'/>" alt=.../></li>';
+	    	
+	    	imgList += '<li><img src= "' + '${pageContext.request.contextPath}'+item.skuMedia.primary.url + ' "width="120" height="120" border="0" "></li>';
+	    	console.log(imgList);
+	    });
 
-		<tr>
-			<td colspan="3"><input type="submit" value="Submit" />
-		</tr>
-	</table>
+	   $('#images').append(imgList);
+	  });
+	});	
+		
+</script>
 
-</form:form>
 
-<c:if test="${not empty error}">
-	<div class="message green">
-		<font color="RED">${book.bookName} ${error}</font>
-	</div>
-</c:if>
-<c:if test="${not empty success}">
-	<div class="message green">
-		<font color="Green">${book.bookName} ${success} </font>
-	</div>
-</c:if>
-<form:form action="/LibraryBook/rest/books" method="GET"
-	modelAttribute="bookList">
-	<input type="submit" value="AllBooks">
-</form:form>
-<script src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=bikashdora-facilitator@gmail.com" 
-    data-button="buynow" 
-    data-name="DemoProduct" 
-    data-quantity="3" 
-    data-callback="http://localhost:8080/LibraryBook/home" 
-    data-env="sandbox">
-    </script>
-   <a href="/LibraryBook/CreditCard">Credit Card Payment</a>
-    
-    
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

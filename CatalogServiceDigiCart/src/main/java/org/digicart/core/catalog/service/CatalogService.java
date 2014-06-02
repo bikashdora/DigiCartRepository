@@ -196,6 +196,8 @@ public interface CatalogService {
 	public List<Product> findProductsForCategory(Category category);
 	
 	public List<Product> findProductsForCategory(String categoryName);
+	
+	public List<Sku> findDefaultSkusProductsForCategory(String categoryName);
 
 	public List<Product> findProductsForCategory(Category category, int limit,
 			int offset);

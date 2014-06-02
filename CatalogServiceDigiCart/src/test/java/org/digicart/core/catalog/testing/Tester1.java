@@ -21,7 +21,7 @@ public class Tester1 {
 		WebResource service = client.resource(getBaseURI());
 
 		// create a Todo
-		Form form = new Form();
+		/*Form form = new Form();
 		form.clear();
 		form.add("productName", "NokiaXL");
 		form.add("description", "New Nokia Windows Phone");
@@ -36,14 +36,23 @@ public class Tester1 {
 
 		ClientResponse response = service.path("createProduct")
 				.type(MediaType.APPLICATION_FORM_URLENCODED)
-				.post(ClientResponse.class, form);
-
+				.post(ClientResponse.class, form);*/
+		Form form = new Form();
 		form.clear();
-		form.add("categoryName", "Default");
-		response = service.path("getProductsForCategory")
+		form.add("categoryName", "Mobiles");
+		ClientResponse response = service.path("getProductsForCategory")
 				.type(MediaType.APPLICATION_FORM_URLENCODED)
 				.post(ClientResponse.class, form);
 		System.out.println("Form response " + response.getEntity(String.class));
+		
+		
+		
+		form.clear();
+		form.add("categoryName", "Mobiles");
+		response = service.path("getDefaultSkusProductsForCategory")
+				.type(MediaType.APPLICATION_FORM_URLENCODED)
+				.post(ClientResponse.class, form);
+		System.out.println("Form response1 " + response.getEntity(String.class));
 
 	}
 

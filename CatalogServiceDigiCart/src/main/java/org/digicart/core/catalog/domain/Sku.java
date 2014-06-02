@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.digicart.common.currency.domain.DigiCartCurrency;
-import org.digicart.common.media.domain.Media;
 import org.digicart.common.money.Money;
 //import org.broadleafcommerce.core.order.domain.FulfillmentGroup;
 //import org.broadleafcommerce.core.order.domain.FulfillmentOption;

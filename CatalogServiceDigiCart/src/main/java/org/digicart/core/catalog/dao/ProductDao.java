@@ -313,4 +313,6 @@ public interface ProductDao {
 			String longDescription, Date activeStartDate, Date activeEndDate,
 			String manufacturer, Boolean isFeaturedProduct, String model,
 			String defaultCategory, Sku sku);
+
+	public List<Sku> readDefaultSkusProductsForCategory(String categoryName);
 }

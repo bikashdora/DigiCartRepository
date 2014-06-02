@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.digicart.common.media.domain;
+package org.digicart.core.catalog.domain;
 
 /**
  * A null safe media object.

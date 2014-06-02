@@ -377,7 +377,12 @@ public class CatalogServiceImpl implements CatalogService {
 	public List<Product> findProductsForCategory(String categoryName) {
 		return productDao.readProductsByCategoryName(categoryName);
 	}
-
+	
+	@Override
+	
+	public List<Sku> findDefaultSkusProductsForCategory(String categoryName) {
+		return productDao.readDefaultSkusProductsForCategory(categoryName);
+	}
 
    /* @SuppressWarnings("rawtypes")
 	@Override

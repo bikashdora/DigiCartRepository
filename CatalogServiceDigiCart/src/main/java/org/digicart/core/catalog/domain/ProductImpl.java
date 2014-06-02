@@ -112,10 +112,10 @@ public class ProductImpl implements Product, Status, Locatable {
 	@Column(name = "MANUFACTURE")
 	protected String manufacturer;
 
-	@Column(name = "IS_FEATURED_PRODUCT", nullable = false)
+	@Column(name = "IS_FEATURED_PRODUCT",columnDefinition = "BIT", nullable = false)
 	protected Boolean isFeaturedProduct = false;
 
-	@Column(name = "CAN_SELL_WITHOUT_OPTIONS")
+	@Column(name = "CAN_SELL_WITHOUT_OPTIONS",columnDefinition = "BIT", length = 1)
 	protected Boolean canSellWithoutOptions = false;
 
 	@Transient

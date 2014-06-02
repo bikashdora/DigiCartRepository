@@ -567,7 +567,22 @@ public class ProductDaoImpl implements ProductDao {
 
 		return resultList;
 	}
+	
+	
+	@Override
+	public List<Sku> readDefaultSkusProductsForCategory(String categoryName) {
+		Category category = readCategoryByName(categoryName);
+		if(category==null)
+			return null;
+		TypedQuery<Sku> query = em.createNamedQuery(
+				"DC_READ_DEFAULTSKUS_PRODUCTS_BY_CATEGORY", Sku.class);
+		query.setParameter("categoryId",category.getId());
+		query.setHint(QueryHints.HINT_CACHEABLE, true);
+		query.setHint(QueryHints.HINT_CACHE_REGION, "query.Catalog");
+		List<Sku> resultList = query.getResultList();
 
+		return resultList;
+	}
 
 	@Override
 	public List<Product> readProductsByCategory(Long categoryId, int limit,
